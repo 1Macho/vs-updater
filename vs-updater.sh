@@ -58,6 +58,8 @@ else
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
   fi
 
+  echo "Created temporal directory $WORK_DIR"
+
   function cleanup {
     if [[ $CLEAN == "FALSE" ]]
     then
@@ -74,9 +76,16 @@ else
   wget "https://cdn.vintagestory.at/gamefiles/stable/vs_archive_${LATEST_STABLE_VS_VERSION}.tar.gz"
   tar -xzvf "vs_archive_${LATEST_STABLE_VS_VERSION}.tar.gz"
   cd "vintagestory"
+  export INST_DIR="$(basename -- "${PWD%%.*}")"
   echo "Installing the game"
   ./install.sh
   echo "Install done."
+  echo "Fixing install dir..."
+  cd ~/ApplicationData
+  echo $(pwd)
+  rm -rf vintagestory
+  mv $INST_DIR vintagestory
+  echo "Done"
   echo "${LATEST_STABLE_VS_VERSION}" > ~/.vsversion
   cleanup
 fi
